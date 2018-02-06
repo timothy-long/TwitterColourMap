@@ -1,0 +1,31 @@
+# Docker compose for pulling up a quick dev environment
+version: '3.4'
+
+services:
+  app:
+    image: gradle:4.5.0-jdk9
+    volumes:
+      - .:/project
+    working_dir: /project
+    command: gradle bootRun
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7.21
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_USER: twittercolourmapuser
+      MYSQL_PASSWORD: 2jA9yK4jp7hJ7798QoHuyJEyMg77Gy
+      MYSQL_DATABASE: twittercolourmap
+
+  dbadmin:
+    image: phpmyadmin/phpmyadmin:4.7
+    ports:
+      - 8081:80
+    depends_on:
+      - db
