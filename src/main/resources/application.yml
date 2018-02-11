@@ -9,6 +9,11 @@ spring:
     hibernate:
       dialect: org.hibernate.dialect.MySQL5Dialect
 
+logging:
+  level:
+    co.timlong.twittercolourmap: TRACE
+    #reactor.ipc.netty: DEBUG
+
 ---
 
 spring:
