@@ -26,19 +26,27 @@ public class TweetProcessor {
     public void startConsuming() {
         LOG.info("Starting streaming...");
 
+        if (subscriber != null && !subscriber.isDisposed()) {
+            LOG.warn("Twitter stream already running");
+            return;
+        }
+
         subscriber = twitter.sampleStream(authentication)
                 .doOnNext(t -> LOG.trace("Processing {}", t))
                 .doOnError(t -> LOG.error("Error processing stream", t))
-                .doOnComplete(() -> LOG.warn("Stream ended"))
+                .doOnComplete(() -> LOG.error("Stream ended!"))
                 .subscribe();
     }
 
     @PreDestroy
     public void stopConsuming() {
-        if (subscriber != null) {
-            LOG.info("Cancelling subscription...");
+        LOG.info("Cancelling subscription...");
+
+        if (subscriber != null && !subscriber.isDisposed()) {
             subscriber.dispose();
             subscriber = null;
+        } else {
+            LOG.warn("Twitter stream already stopped");
         }
     }
 }
